@@ -49,6 +49,12 @@ class TestBooking:
 
         assert post_booking.status_code == 500, 'Ошибка, нет валидации токена'
 
+    def test_negative_get_booking(self, auth_session):
+
+        get_booking = auth_session.get(f'{BASE_URL}/nf')
+
+        assert get_booking.status_code == HTTPStatus.NOT_FOUND, 'Ошибка, найдена странница по несуществующему endpoint'
+
 
     def test_put_booking(self, create_booking, booking_data, auth_session):
 
