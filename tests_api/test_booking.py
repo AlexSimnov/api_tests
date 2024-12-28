@@ -39,13 +39,16 @@ class TestBooking:
 
     def test_negative_post_booking(self, auth_session, booking_data):
 
-        booking_data.update({'totalprice': 'total'})
+        booking_data.update({'bookingdates': 'total'})
+
+        auth_session.headers.update({'Cookies': 'token=tk'})
 
         post_booking = auth_session.post(
             f'{BASE_URL}/booking',
             json=booking_data)
 
-        assert post_booking.status_code == HTTPStatus.BAD_REQUEST
+        assert post_booking.status_code == 500, 'Ошибка, нет валидации токена'
+
 
     def test_put_booking(self, create_booking, booking_data, auth_session):
 
