@@ -47,5 +47,39 @@ class TestBooking:
 
         assert post_booking.status_code == HTTPStatus.BAD_REQUEST
 
-    def test_put_booking(self, auth_session, booking_data):
-        pass
+    def test_put_booking(self, create_booking, booking_data, auth_session):
+
+        data = {
+            "firstname": 'Jake',
+            "lastname": 'Makmilan',
+            "totalprice": 1001,
+            "depositpaid": True,
+            "bookingdates": {
+                "checkin": "2024-04-05",
+                "checkout": "2024-04-08"
+            },
+            "additionalneeds": "Cigars"
+        }
+
+        put_booking = auth_session.put(
+            f'{BASE_URL}/booking/{create_booking['id']}',
+            json=data
+        )
+
+        assert put_booking.status_code == HTTPStatus.OK, 'Ошибка при обновлении брони'
+
+        assert put_booking.json() != create_booking['old_data']
+
+    def test_patch_booking(self, create_booking, booking_data, auth_session):
+
+        booking_data.update({'firstname': 'James'})
+
+        patch_booking = auth_session.put(
+            f'{BASE_URL}/booking/{create_booking['id']}',
+            json=booking_data
+        )
+
+        assert patch_booking.status_code == HTTPStatus.OK, 'Ошибка при обновлении брони'
+
+        assert patch_booking.json()['firstname'] == 'James', 'Ошибка, имя не обновилось'
+        assert patch_booking.json()['firstname'] != create_booking['old_data']['firstname'], 'Ошибка, данные не обновились'

@@ -32,8 +32,8 @@ def auth_session():
 @pytest.fixture
 def booking_data():
     return {
-        "firstname": faker.first_name(),
-        "lastname": faker.last_name(),
+        "firstname": faker.unique.first_name(),
+        "lastname": faker.unique.last_name(),
         "totalprice": faker.random_int(min=100, max=100000),
         "depositpaid": True,
         "bookingdates": {
@@ -42,3 +42,14 @@ def booking_data():
         },
         "additionalneeds": "Cigars"
     }
+
+
+@pytest.fixture
+def create_booking(booking_data, auth_session):
+    responce = auth_session.post(
+        f'{BASE_URL}/booking',
+        json=booking_data
+    )
+
+    return {'id': responce.json()['bookingid'],
+            'old_data': responce.json()['booking']}
